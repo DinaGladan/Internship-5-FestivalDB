@@ -1,3 +1,4 @@
+--osnovne tablice
 CREATE TABLE Festivals(
 	FestivalId SERIAL PRIMARY KEY,
 	FestivalName VARCHAR(50) NOT NULL,
@@ -91,9 +92,46 @@ CREATE TABLE MembershipCards(
 	ActiveStatus BOOLEAN DEFAULT True
 );
 
+-- postavljanje FK
 
+ALTER TABLE Stages
+	ADD COLUMN
+	FestivalId INT REFERENCES Festivals(FestivalId);
 
+ALTER TABLE Tickets
+	ADD COLUMN
+	FestivalId INT REFERENCES Festivals(FestivalId);
 
+ALTER TABLE Workshop
+	ADD COLUMN
+	FestivalId INT REFERENCES Festivals(FestivalId);
+
+ALTER TABLE Staff
+	ADD COLUMN
+	FestivalId INT REFERENCES Festivals(FestivalId);
+
+ALTER TABLE Performances
+	ADD COLUMN FestivalId INT,
+	ADD COLUMN StageId INT,
+	ADD COLUMN PerformerId INT,
+	ADD CONSTRAINT FKPerformanceFestival
+	FOREIGN KEY (FestivalId) REFERENCES Festivals(FestivalId),
+	ADD CONSTRAINT FKPerformanceStage
+	FOREIGN KEY (StageId) REFERENCES Stages(StageId),
+	ADD CONSTRAINT FKPerformancePerformer
+	FOREIGN KEY (PerformerId) REFERENCES Performers(PerformerId);
+
+ALTER TABLE Purchase
+	ADD COLUMN VisitorId INT,
+	ADD COLUMN FestivalId INT,
+	ADD CONSTRAINT FKPurchaseVisitor 
+	FOREIGN KEY (VisitorId) REFERENCES Visitors(VisitorId),
+	ADD CONSTRAINT FKPurchaseFestival 
+	FOREIGN KEY (FestivalId) REFERENCES Festivals(FestivalId);
+
+ALTER TABLE Workshop
+	ADD COLUMN
+	MentorId INT REFERENCES Mentor(MentorId);
 
 
 
