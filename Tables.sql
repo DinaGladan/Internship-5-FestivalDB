@@ -133,9 +133,22 @@ ALTER TABLE Workshop
 	ADD COLUMN
 	MentorId INT REFERENCES Mentor(MentorId);
 
+-- M:N 
 
+CREATE TABLE WorkshopVisitor(
+	WorkshopId INT REFERENCES Workshop(WorkshopId),
+	VisitorId INT REFERENCES Visitors(VisitorId),
+	RegistrationStatus VARCHAR(30) CHECK (RegistrationStatus IN ('registered', 'cancelled', 'attended')),
+	RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(WorkshopId, VisitorId)
+);
 
-
+CREATE TABLE PurchaseTickets(
+	PurchaseId INT REFERENCES Purchase(PurchaseId),
+	TicketId INT REFERENCES Tickets(TicketId),
+	Quantity INT CHECK(Quantity>0),
+	PRIMARY KEY(PurchaseId, TicketId)
+);
 
 
 
