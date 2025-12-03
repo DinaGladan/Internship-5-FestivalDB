@@ -150,6 +150,126 @@ CREATE TABLE PurchaseTickets(
 	PRIMARY KEY(PurchaseId, TicketId)
 );
 
+-- dodatni uvjeti
+CREATE OR REPLACE FUNCTION free_stage_for_performance()
+	RETURNS TRIGGER
+AS
+$$
+	BEGIN
+	IF EXISTS(
+		SELECT 1 FROM Performances performance
+		WHERE (performance.StageId = NEW.StageId
+		AND NEW.StartTime < performance.EndTime
+		AND NEW.EndTime > performance.StartTime
+		AND performance.PerformanceId <> New.PerformanceId
+		)
+	) THEN RAISE EXCEPTION 'The performance cannot be on an already occupied stage.';
+	END IF;
+RETURN NEW;
+	END;
+$$
+language plpgsql;
 
 
+CREATE TRIGGER Performance_Stage
+	BEFORE INSERT OR UPDATE ON Performances
+	FOR EACH ROW
+	EXECUTE FUNCTION free_stage_for_performance();
 
+
+CREATE OR REPLACE FUNCTION valid_mentor()
+	RETURNS TRIGGER
+AS
+$$
+	BEGIN
+	IF EXTRACT(YEAR FROM AGE(NEW.BirthDate)) < 18 THEN
+		RAISE EXCEPTION 'Mentor needs to be at least 18 years old.';
+	ELSIF NEW.YearsOfExperience < 2 THEN
+		RAISE EXCEPTION 'Mentors needs to have at least 2 years of experience.';
+	END IF;
+	RETURN NEW;
+	END;
+$$
+language plpgsql;
+
+CREATE TRIGGER Mentor_Validation
+	BEFORE INSERT OR UPDATE ON Mentor
+	FOR EACH ROW
+	EXECUTE FUNCTION valid_mentor();
+
+CREATE OR REPLACE FUNCTION valid_secure_guard()
+	RETURNS TRIGGER
+AS
+$$
+	BEGIN
+	IF(NEW.Role = 'security guard' 
+		AND EXTRACT(YEAR FROM AGE(NEW.BirthDate)) < 21)THEN
+		RAISE EXCEPTION 'Security guard needs to be at least 21 years old.';
+	END IF;
+	RETURN NEW;
+	END;
+$$
+language plpgsql;
+
+CREATE TRIGGER Security_Guard_Validation
+	BEFORE INSERT OR UPDATE ON Staff
+	FOR EACH ROW
+	EXECUTE FUNCTION valid_secure_guard();
+
+
+ALTER TABLE MembershipCards
+	ADD COLUMN 
+	VisitorId INT UNIQUE REFERENCES Visitors(VisitorId);
+
+CREATE OR REPLACE FUNCTION Is_Membership_Possible()
+	RETURNS TRIGGER
+AS
+$$
+	DECLARE festivalCount INT; SpentMoney FLOAT;
+	BEGIN
+	SELECT COUNT(DISTINCT FestivalId)
+	INTO festivalCount
+	FROM Purchase
+	WHERE VisitorId = NEW.VisitorId;
+	IF(festivalCount < 3) THEN
+		RAISE EXCEPTION 'To get membership, visit at least 3 festivals.';
+	END IF;
+
+	SELECT SUM(Price)
+	INTO SpentMoney
+	FROM Purchase
+	WHERE VisitorId = NEW.VisitorId;
+	IF(SpentMoney < 600) THEN
+		RAISE EXCEPTION 'To get membership, spend at least 600 euros.';
+	END IF;
+	RETURN NEW;
+	END;
+$$
+language plpgsql;
+
+CREATE TRIGGER Membership_Possibility
+	BEFORE INSERT ON MembershipCards
+	FOR EACH ROW
+	EXECUTE FUNCTION Is_Membership_Possible();
+
+SELECT * FROM Visitors
+SELECT * FROM Festivals
+SELECT * FROM Purchase
+
+INSERT INTO Festivals (FestivalName, City, Capacity, StartDate, EndDate, Status, Camp)
+VALUES ('ULTRA', 'Split', 10000, NOW(), NOW(), 'active', false);
+INSERT INTO Visitors (Name, Surname, BirthDate, City, Email, Country)
+VALUES ('Posjetitelj3', 'Prezic', '2004-12-12', 'Split', 'dig@gmail.com', 'Croatia');
+
+INSERT INTO Purchase (PurchaseMade, Price, VisitorId, FestivalId)
+VALUES
+(NOW(), 100, 3, 1),
+(NOW(), 300, 3, 4),
+(NOW(), 250, 3, 3);
+
+INSERT INTO MembershipCards (Activation, ActiveStatus, VisitorId)
+VALUES (NOW(), TRUE, 3);
+
+INSERT INTO Purchase (PurchaseMade, Price, VisitorId, FestivalId)
+VALUES
+(NOW(), 100, 2, 4);
