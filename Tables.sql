@@ -234,7 +234,8 @@ $$
 	FROM Purchase
 	WHERE VisitorId = NEW.VisitorId;
 	IF(festivalCount < 3) THEN
-		RAISE EXCEPTION 'To get membership, visit at least 3 festivals.';
+		RAISE NOTICE 'To get membership, visit at least 3 festivals.';
+		RETURN NULL;
 	END IF;
 
 	SELECT SUM(Price)
@@ -242,7 +243,8 @@ $$
 	FROM Purchase
 	WHERE VisitorId = NEW.VisitorId;
 	IF(SpentMoney < 600) THEN
-		RAISE EXCEPTION 'To get membership, spend at least 600 euros.';
+		RAISE NOTICE 'To get membership, spend at least 600 euros.';
+		RETURN NULL;
 	END IF;
 	RETURN NEW;
 	END;
