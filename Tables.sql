@@ -252,24 +252,10 @@ CREATE TRIGGER Membership_Possibility
 	FOR EACH ROW
 	EXECUTE FUNCTION Is_Membership_Possible();
 
-SELECT * FROM Visitors
-SELECT * FROM Festivals
-SELECT * FROM Purchase
+--zaboravljena provjera
+ALTER TABLE Performances
+	ADD CONSTRAINT ValidPerformanceTime CHECK(EndTime>StartTime);
 
-INSERT INTO Festivals (FestivalName, City, Capacity, StartDate, EndDate, Status, Camp)
-VALUES ('ULTRA', 'Split', 10000, NOW(), NOW(), 'active', false);
-INSERT INTO Visitors (Name, Surname, BirthDate, City, Email, Country)
-VALUES ('Posjetitelj3', 'Prezic', '2004-12-12', 'Split', 'dig@gmail.com', 'Croatia');
 
-INSERT INTO Purchase (PurchaseMade, Price, VisitorId, FestivalId)
-VALUES
-(NOW(), 100, 3, 1),
-(NOW(), 300, 3, 4),
-(NOW(), 250, 3, 3);
 
-INSERT INTO MembershipCards (Activation, ActiveStatus, VisitorId)
-VALUES (NOW(), TRUE, 3);
 
-INSERT INTO Purchase (PurchaseMade, Price, VisitorId, FestivalId)
-VALUES
-(NOW(), 100, 2, 4);
