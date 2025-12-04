@@ -186,6 +186,8 @@ $$
 		RAISE EXCEPTION 'Mentor needs to be at least 18 years old.';
 	ELSIF NEW.YearsOfExperience < 2 THEN
 		RAISE EXCEPTION 'Mentors needs to have at least 2 years of experience.';
+	ELSIF NEW.YearsOfExperience  > EXTRACT(YEAR FROM AGE(NEW.BirthDate)) THEN
+		NEW.YearsOfExperience := EXTRACT(YEAR FROM AGE(NEW.BirthDate)) - 18 +2;
 	END IF;
 	RETURN NEW;
 	END;
