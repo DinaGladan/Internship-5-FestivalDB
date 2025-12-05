@@ -1,8 +1,8 @@
 --osnovne tablice
 CREATE TABLE Festivals(
 	FestivalId SERIAL PRIMARY KEY,
-	FestivalName VARCHAR(50) NOT NULL,
-	City VARCHAR(30) NOT NULL,
+	FestivalName VARCHAR(100) NOT NULL,
+	City VARCHAR(100) NOT NULL,
 	Capacity INT CHECK(Capacity >= 0),
 	StartDate TIMESTAMP,
 	EndDate TIMESTAMP CHECK(EndDate>=StartDate),
@@ -21,7 +21,7 @@ CREATE TABLE Performers(
 
 CREATE TABLE Stages(
 	StageId SERIAL PRIMARY KEY,
-	StageName VARCHAR(50) NOT NULL,
+	StageName VARCHAR(200) NOT NULL,
 	Location VARCHAR(50) NOT NULL,
 	Capacity INT CHECK(Capacity>=0),
 	HasRoof BOOLEAN DEFAULT False
@@ -89,7 +89,7 @@ CREATE TABLE Staff(
 CREATE TABLE MembershipCards(
 	MCardId SERIAL PRIMARY KEY,
 	Activation DATE NOT NULL,
-	ActiveStatus BOOLEAN DEFAULT True
+	ActiveStatus VARCHAR(100)
 );
 
 -- postavljanje FK
@@ -104,7 +104,9 @@ ALTER TABLE Tickets
 
 ALTER TABLE Workshop
 	ADD COLUMN
-	FestivalId INT REFERENCES Festivals(FestivalId);
+	FestivalId INT REFERENCES Festivals(FestivalId),
+	ADD COLUMN
+	MentorId INT REFERENCES Mentor(MentorId);
 
 ALTER TABLE Staff
 	ADD COLUMN
@@ -119,7 +121,8 @@ ALTER TABLE Performances
 	ADD CONSTRAINT FKPerformanceStage
 	FOREIGN KEY (StageId) REFERENCES Stages(StageId),
 	ADD CONSTRAINT FKPerformancePerformer
-	FOREIGN KEY (PerformerId) REFERENCES Performers(PerformerId);
+	FOREIGN KEY (PerformerId) REFERENCES Performers(PerformerId),
+	ADD CONSTRAINT ValidPerformanceTime CHECK(StartTime< EndTime);
 
 ALTER TABLE Purchase
 	ADD COLUMN VisitorId INT,
@@ -129,9 +132,9 @@ ALTER TABLE Purchase
 	ADD CONSTRAINT FKPurchaseFestival 
 	FOREIGN KEY (FestivalId) REFERENCES Festivals(FestivalId);
 
-ALTER TABLE Workshop
-	ADD COLUMN
-	MentorId INT REFERENCES Mentor(MentorId);
+ALTER TABLE MembershipCards
+	ADD COLUMN 
+	VisitorId INT UNIQUE REFERENCES Visitors(VisitorId);
 
 -- M:N 
 
@@ -219,19 +222,15 @@ CREATE TRIGGER Security_Guard_Validation
 	EXECUTE FUNCTION valid_secure_guard();
 
 
-ALTER TABLE MembershipCards
-	ADD COLUMN 
-	VisitorId INT UNIQUE REFERENCES Visitors(VisitorId);
-
 CREATE OR REPLACE FUNCTION Is_Membership_Possible()
 	RETURNS TRIGGER
 AS
 $$
 	DECLARE festivalCount INT; SpentMoney FLOAT;
 	BEGIN
-	SELECT COUNT(DISTINCT FestivalId)
-	INTO festivalCount
-	FROM Purchase
+	SELECT COUNT(FestivalId) --Za razlicite festivale samo dodat DISTINCT
+	INTO festivalCount       -- No onda imam samo 73 redka u tablici MembershipCards
+	FROM Purchase			 -- a ovako ih je svih 1000 posjetitelja
 	WHERE VisitorId = NEW.VisitorId;
 	IF(festivalCount < 3) THEN
 		RAISE NOTICE 'To get membership, visit at least 3 festivals.';
@@ -252,14 +251,7 @@ $$
 language plpgsql;
 
 CREATE TRIGGER Membership_Possibility
-	BEFORE INSERT ON MembershipCards
+	BEFORE INSERT OR UPDATE ON MembershipCards
 	FOR EACH ROW
 	EXECUTE FUNCTION Is_Membership_Possible();
-
---zaboravljena provjera
-ALTER TABLE Performances
-	ADD CONSTRAINT ValidPerformanceTime CHECK(EndTime>StartTime);
-
-
-
 
