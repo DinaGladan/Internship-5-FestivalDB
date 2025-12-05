@@ -4232,7 +4232,12 @@ insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, Perf
 insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('18:18', 45, 122, 855, 426);
 insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('19:16', 911, 454, 361, 370);
 insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('13:28', 288, 87, 410, 292);
-insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('12:20', 744, 638, 959, 503);
+
+insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('12:20', 10111, 638, 959, 503);
+insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('16:20', 10151, 638, 959, 503);
+insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('19:20', 30111, 638, 959, 503);
+insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('4:20', 40111, 638, 959, 503);
+insert into Performances (StartTime, NumberOfVisitors, FestivalId, StageId, PerformerId) values ('1:20', 50111, 638, 959, 503);
 
 insert into Tickets (Type, Price, Description, FestivalId) values ('VIP', 416.01, 'Quis nostrud exercitation ullamco', 258);
 insert into Tickets (Type, Price, Description, FestivalId) values ('Festival', 865.45, 'Sed do eiusmod tempor incididunt', 772);
@@ -6235,6 +6240,12 @@ insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('
 insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Rosabel', 'Greest', '1933-12-24', 'Hangji', 'rgreestrp@hexun.com', 'China');
 insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Margaux', 'Bulcroft', '1961-11-04', 'Porsgrunn', 'mbulcroftrq@woothemes.com', 'Norway');
 insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Corly', 'Shorrock', '1943-08-02', 'Cadagmayan Norte', 'cshorrockrr@histats.com', 'Philippines');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Sime', 'Avic', '1992-10-22', 'Split', 'eiilirm@biblegateway.com', 'Indonesia');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Mate', 'Babic', '2018-02-07', 'Split', 'ednellrn@gmail.com', 'Indonesia');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Iva', 'Avic', '1958-11-26', 'Split', 'jmallsro@gmail.com', 'Brazil');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Lana', 'Babic', '1933-12-24', 'Split', 'rgrrp@gmail.com', 'China');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Jurica', 'Avic', '1961-11-04', 'Split', 'mbcrftrq@gmail.com', 'Norway');
+insert into Visitors (Name , Surname, BirthDate, City, Email, Country) values ('Katja', 'Babic', '1943-08-02', 'Split', 'cshrkrr@gmail.com', 'Philippines');
 
 
 insert into Mentor (Name , Surname, BirthDate, AreaOfExpertise, YearsOfExperience) values ('Nessie', 'Weben', '1988-09-02', 'Art', 79);
@@ -8239,6 +8250,12 @@ insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledg
 insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Storytelling Workshop', 'beginner', 11, 89, false, 739, 35);
 insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Storytelling Workshop', 'intermediate', 2, 22, true, 819, 817);
 insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Songwriting', 'beginner', 22, 57, false, 865, 847);
+insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Storytelling Workshop', 'intermediate', 4, 300, false, 771, 39);
+insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Music Production', 'intermediate', 4,360, true, 832, 225);
+insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Storytelling Workshop', 'beginner', 11, 300, false, 739, 35);
+insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Storytelling Workshop', 'intermediate', 2, 270, true, 819, 817);
+insert into WorkShop (Name , Difficulty, Capacity, Duration, NeededPriorKnowledge, FestivalId, MentorId) values ('Songwriting', 'beginner', 22, 330, false, 865, 847);
+
 
 insert into WorkshopVisitor (WorkshopId, VisitorId, RegistrationStatus) values (375, 596, 'attended');
 insert into WorkshopVisitor (WorkshopId, VisitorId, RegistrationStatus) values (190, 61, 'attended');
